@@ -1,5 +1,5 @@
 {
-   "name": "potjs",
+   "name": "@kolynes/potjs",
    "version": "0.0.1",
    "description": "A simple typescript web framework ",
    "main": "index.js",

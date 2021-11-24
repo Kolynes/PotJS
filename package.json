@@ -1,7 +1,7 @@
 {
    "name": "potjs",
    "version": "0.0.1",
-   "description": "A simple web framework ",
+   "description": "A simple typescript web framework ",
    "main": "index.js",
    "types": "index.d.ts",
    "scripts": {

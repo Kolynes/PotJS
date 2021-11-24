@@ -1,0 +1,47 @@
+{
+   "name": "potjs",
+   "version": "0.0.1",
+   "description": "A simple web framework ",
+   "main": "index.js",
+   "types": "index.d.ts",
+   "scripts": {
+      "prepublish": "tsc",
+      "build": "tsc",
+      "start": "ts-node src/index.ts",
+      "start:demon": "nodemon ./src/index.ts",
+      "db:init": "typeorm init",
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
+   },
+   "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Kolynes/potjs.git"
+   },
+   "keywords": [
+      "web",
+      "typescript",
+      "framework"
+   ],
+   "author": "Kolynes C. Chinedu",
+   "license": "ISC",
+   "bugs": {
+      "url": "https://github.com/Kolynes/potjs/issues"
+   },
+   "homepage": "https://github.com/Kolynes/potjs#readme",
+   "devDependencies": {
+      "@types/jsonwebtoken": "^8.5.6",
+      "@types/node": "^8.0.29",
+      "@types/validator": "^13.7.0",
+      "nodemon": "^2.0.15",
+      "ts-node": "3.3.0",
+      "typescript": "3.3.3333"
+   },
+   "dependencies": {
+      "@types/formidable": "^2.0.0",
+      "formidable": "^2.0.1",
+      "jsonwebtoken": "^8.5.1",
+      "mysql": "^2.14.1",
+      "reflect-metadata": "^0.1.10",
+      "typeorm": "0.2.41"
+   }
+}

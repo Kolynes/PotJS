@@ -1,0 +1,17 @@
+.idea/
+.vscode/
+node_modules/
+build/
+tmp/
+temp/
+dist/
+/auth/
+/controllers/
+/core/
+/database/
+/middleware/
+/request/
+/response/
+/utils/
+/index.*
+/types.*

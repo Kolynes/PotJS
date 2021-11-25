@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { Connection, createConnection } from "typeorm";
 import { EServices } from "../types";
 import Service, { serviceClass } from "../utils/services/Service";

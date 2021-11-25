@@ -3,16 +3,13 @@ import HttpRequest from "../request/HttpRequest";
 import HttpResponse from "../response/HttpBaseResponse";
 import { EServices } from "../types";
 import Service, { serviceClass } from "../utils/services/Service";
-import { service } from "../utils/services/ServiceProvider";
+import ServiceProvider, { service } from "../utils/services/ServiceProvider";
 import { IMiddleware, IMiddlewareService, IMiddlewareSettings, RequestResolver } from "./types";
 import path from "path";
 
 @serviceClass(EServices.middleware)
 class MiddlewareService extends Service implements IMiddlewareService {
   protected middleware: IMiddleware[] = [];
-
-  @service(EServices.controllers)
-  private controllerService!: IControllerService;
 
   @service(EServices.settings)
   private settings!: IMiddlewareSettings;
@@ -30,10 +27,11 @@ class MiddlewareService extends Service implements IMiddlewareService {
   }
 
   handle(request: HttpRequest, index: number, ...params: any[]): Promise<HttpResponse> {
+    let controllerService = ServiceProvider.getInstance().getService<IControllerService>(EServices);
     if(this.middleware.length == 0)
-      return this.controllerService.routeToController(request);
+      return controllerService.routeToController(request);
     else if(index + 1 == this.middleware.length)
-      return this.middleware[index].handle(request, request => this.controllerService.routeToController(request));
+      return this.middleware[index].handle(request, request => controllerService.routeToController(request));
     else return this.middleware[index].handle(request, this.getNext(index + 1, ...params));
   }
 

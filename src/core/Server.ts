@@ -14,8 +14,8 @@ export default class Server {
   logger!: ILogger;
 
   constructor(
-    readonly host?: string,
-    readonly port?: number
+    readonly host: string = "127.0.0.1",
+    readonly port: number = 8000
   ) {
     createServer(async (req, res) => {
       try {

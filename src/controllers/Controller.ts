@@ -1,5 +1,6 @@
 import { IMiddleware } from "../middleware/types";
 import HttpRequest from "../request/HttpRequest";
+import { HttpBadRequestResponse } from "../response";
 import HttpResponse from "../response/HttpBaseResponse";
 import { EHttpMethods, EServices, IIndexable } from "../types";
 import ServiceProvider from "../utils/services/ServiceProvider";
@@ -20,6 +21,38 @@ export function route(path: string = "", method: EHttpMethods = EHttpMethods.get
   return (target: any, propertyKey: string | symbol, descriptor) => {
     Object.defineProperty(target, `Route${propertyKey as String}`, { value: { call: target[propertyKey], path, method } })
   }
+}
+
+export function Get(path: string = ""): MethodDecorator {
+  return route(path, EHttpMethods.get);
+}
+
+export function Post(path: string = ""): MethodDecorator {
+  return route(path, EHttpMethods.post);
+}
+
+export function Put(path: string = ""): MethodDecorator {
+  return route(path, EHttpMethods.put);
+}
+
+export function Delete(path: string = ""): MethodDecorator {
+  return route(path, EHttpMethods.delete);
+}
+
+export function Patch(path: string = ""): MethodDecorator {
+  return route(path, EHttpMethods.patch);
+}
+
+export function Connect(path: string = ""): MethodDecorator {
+  return route(path, EHttpMethods.connect);
+}
+
+export function Options(path: string = ""): MethodDecorator {
+  return route(path, EHttpMethods.options);
+}
+
+export function Trace(path: string = ""): MethodDecorator {
+  return route(path, EHttpMethods.trace);
 }
 
 export default class Controller implements IController {
@@ -49,7 +82,7 @@ export default class Controller implements IController {
       this.routes[this.basePath + path] = new Map();
     else if (this.routes[this.basePath + path].has(method))
       throw (`Error registering route: ${method} ${this.basePath + path} has been registered before`)
-    this.routes[this.basePath + path].set(method, instanceMethod)
+    this.routes[this.basePath + path].set(method, instanceMethod.bind(this))
   }
 
   async routeToMethod(request: HttpRequest, route: string, params: any[]): Promise<HttpResponse> {

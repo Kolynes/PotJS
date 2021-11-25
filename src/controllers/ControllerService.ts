@@ -7,6 +7,7 @@ import Service, { serviceClass } from "../utils/services/Service";
 import { IController, IControllerService, IControllerSettings } from "./types";
 import { service } from "../utils/services/ServiceProvider";
 import { EServices } from "../types";
+import path from "path";
 
 @serviceClass(EServices.controllers)
 class ControllerService extends Service implements IControllerService {
@@ -19,7 +20,7 @@ class ControllerService extends Service implements IControllerService {
     let controllerModules: string[] = this.settings.controllers || [];
     if(controllerModules.length > 0)
       for(let module of controllerModules)
-        await import(module);
+        await import(path.resolve(this.settings.sourceDirectory, module));
     super.initState();
   }
 

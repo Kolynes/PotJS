@@ -1,26 +1,11 @@
-import Controller from "../controllers/Controller";
 import { IControllerService } from "../controllers/types";
 import HttpRequest from "../request/HttpRequest";
 import HttpResponse from "../response/HttpBaseResponse";
 import { EServices } from "../types";
 import Service, { serviceClass } from "../utils/services/Service";
-import ServiceProvider, { service } from "../utils/services/ServiceProvider";
+import { service } from "../utils/services/ServiceProvider";
 import { IMiddleware, IMiddlewareService, IMiddlewareSettings, RequestResolver } from "./types";
-
-export function middleware(applyTo?: typeof Controller[]): ClassDecorator {
-  return (target: any) => {
-    let middlewareService = ServiceProvider.getInstance().getService<IMiddlewareService>(EServices.middleware);
-    let controllerService = ServiceProvider.getInstance().getService<IControllerService>(EServices.controllers);
-    let targetObject = new target();
-    if(applyTo != undefined) {
-      for(var ControllerType of applyTo!)
-        for(var controller of controllerService.controllers)
-          if(controller instanceof ControllerType)
-            controller.middlewareService.addMiddleware(targetObject)
-    }
-    else middlewareService.addMiddleware(targetObject);
-  }
-}
+import path from "path";
 
 @serviceClass(EServices.middleware)
 class MiddlewareService extends Service implements IMiddlewareService {
@@ -36,7 +21,7 @@ class MiddlewareService extends Service implements IMiddlewareService {
     let middlewareModules: string[] = this.settings.middleware || [];
     if(middlewareModules.length > 0)
       for(let module of middlewareModules)
-        await import(module);
+        await import(path.resolve(this.settings.sourceDirectory, module));
     super.initState();
   }
 

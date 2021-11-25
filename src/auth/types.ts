@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { IIndexable } from "../types";
+import { IBasicSettings, IIndexable } from "../types";
 import Service from "../utils/services/Service";
 
 export interface IAuthService extends Service {
@@ -12,7 +12,7 @@ export interface IAuthenticator {
   authenticate(credentials: IIndexable<string>): boolean;
 }
 
-export interface IAuthSettings {
+export interface IAuthSettings extends IBasicSettings {
   userModel: string;
   secretKey: string;
   authenticators: string[];

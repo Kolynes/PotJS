@@ -1,4 +1,4 @@
-import { IIndexable } from "../../types";
+import { IBasicSettings, IIndexable } from "../../types";
 import Service from "../services/Service";
 import Observable from "./Observable";
 
@@ -7,6 +7,6 @@ export interface IObservableService extends Service {
   getObservable(key: string): Observable;
 }
 
-export interface IObservablesSettings {
+export interface IObservablesSettings extends IBasicSettings {
   observables: IIndexable<string>;
 }

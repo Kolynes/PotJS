@@ -15,6 +15,10 @@ export interface ISettings extends Service {
   load(input: IIndexable<any>): void;
 }
 
+export interface IBasicSettings {
+  sourceDirectory: string;
+}
+
 export enum EHttpMethods {
   get = "GET",
   post = "POST",

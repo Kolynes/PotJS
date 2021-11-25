@@ -3,6 +3,7 @@ import Service, { serviceClass } from "../services/Service";
 import { service } from "../services/ServiceProvider";
 import Observable from "./Observable";
 import { IObservablesSettings } from "./types";
+import path from "path";
 
 @serviceClass(EServices.observables)
 class ObservablesServices extends Service {
@@ -14,7 +15,7 @@ class ObservablesServices extends Service {
   async initState() {
     let observables = this.settings.observables || {};
     for(let key in observables)
-      this.addObservable(key, await import(observables[key]));
+      this.addObservable(key, await import(path.resolve(this.settings.sourceDirectory, observables[key])));
     super.initState(); 
   }
 

@@ -1,7 +1,14 @@
 import Service, { serviceClass } from "../utils/services/Service";
 import jwt from "jsonwebtoken";
 import { service } from "../utils/services/ServiceProvider";
-import { EServices, IAuthenticator, IAuthService, IAuthSettings, IIndexable } from "../types";
+import { 
+  EServices, 
+  IAuthenticator, 
+  IAuthService, 
+  IAuthSettings, 
+  IIndexable 
+} from "../types";
+import path from "path";
 
 @serviceClass(EServices.auth)
 class AuthService extends Service implements IAuthService {
@@ -12,7 +19,7 @@ class AuthService extends Service implements IAuthService {
 
   async initState() {
     for(let authenticatorModule of this.settings.authenticators || [])
-      this.addAuthenticator(await import(authenticatorModule));
+      this.addAuthenticator(await import(path.resolve(this.settings.sourceDirectory, authenticatorModule)));
     super.initState(); 
   }
   

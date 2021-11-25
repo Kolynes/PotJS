@@ -34,7 +34,7 @@ class ControllerService extends Service implements IControllerService {
 
     if(path1Fragments.length == path2Fragments.length) {
       for(let fragment in path1Fragments)
-        if(fragment.startsWith(":"))
+        if(path1Fragments[fragment].startsWith(":"))
           params.push(path2Fragments[fragment])
         else if(path1Fragments[fragment] != path2Fragments[fragment])
           return false;
@@ -42,6 +42,7 @@ class ControllerService extends Service implements IControllerService {
     }
     return false;
   }
+
   getFragments(path: string): string[] {
     let fragments = path.split("/")
     return fragments.filter(element => element.length > 0)

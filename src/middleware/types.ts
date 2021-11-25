@@ -14,7 +14,3 @@ export interface IMiddlewareService extends Service {
   addMiddleware(middleware: IMiddleware): void;
 }
 
-export interface IMiddlewareSettings extends IBasicSettings {
-  middleware: string[];
-}
-

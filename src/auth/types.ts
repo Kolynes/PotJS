@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { BaseEntity } from "typeorm";
 import { IBasicSettings, IIndexable } from "../types";
 import Service from "../utils/services/Service";
 
@@ -13,8 +14,7 @@ export interface IAuthenticator {
 }
 
 export interface IAuthSettings extends IBasicSettings {
-  userModel: string;
+  UserModel: typeof BaseEntity;
   secretKey: string;
-  authenticators: string[];
   jwtSigningOptions: jwt.SignOptions
 }

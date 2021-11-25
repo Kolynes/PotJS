@@ -8,7 +8,6 @@ import {
   IAuthSettings, 
   IIndexable 
 } from "../types";
-import path from "path";
 
 @serviceClass(EServices.auth)
 class AuthService extends Service implements IAuthService {
@@ -16,12 +15,6 @@ class AuthService extends Service implements IAuthService {
 
   @service(EServices.settings)
   private settings!: IAuthSettings;
-
-  async initState() {
-    for(let authenticatorModule of this.settings.authenticators || [])
-      this.addAuthenticator(await import(path.resolve(this.settings.sourceDirectory, authenticatorModule)));
-    super.initState(); 
-  }
   
   login(user: { id: string }): string {
     return jwt.sign(

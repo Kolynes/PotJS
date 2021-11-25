@@ -1,7 +1,5 @@
 import { EServices, IIndexable, ISettings } from "../types";
 import Service, { serviceClass } from "../utils/services/Service";
-import {  } from "./types";
-
 @serviceClass(EServices.settings)
 class Settings extends Service {
   load(input: IIndexable<any>) {

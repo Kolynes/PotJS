@@ -8,7 +8,6 @@ export function serviceClass(key: any): ClassDecorator {
 
 export default abstract class Service {
   private initialized: boolean = false;
-  private onReadyStateCallback: Function = () => null;
 
   constructor(){}
 
@@ -16,14 +15,7 @@ export default abstract class Service {
     return this.initialized;
   }
 
-  initState(...args: any[]){
+  initState(...args: any[]) {
     this.initialized = true;
-    this.onReadyStateCallback();
-  }
-
-  onReadyState(callback: Function) {
-    this.onReadyStateCallback = callback;
-    if(this.initialized)
-      this.onReadyStateCallback();
   }
 }

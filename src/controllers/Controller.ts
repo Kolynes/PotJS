@@ -1,6 +1,5 @@
 import { IMiddleware } from "../middleware/types";
 import HttpRequest from "../request/HttpRequest";
-import { HttpBadRequestResponse } from "../response";
 import HttpResponse from "../response/HttpBaseResponse";
 import { EHttpMethods, EServices, IIndexable } from "../types";
 import ServiceProvider from "../utils/services/ServiceProvider";

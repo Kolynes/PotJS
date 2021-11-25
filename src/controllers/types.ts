@@ -15,7 +15,3 @@ export interface IControllerService extends Service {
   addController(controller: IController): void;
   routeToController(request: HttpRequest): Promise<HttpResponse>;
 }
-
-export interface IControllerSettings extends IBasicSettings {
-  controllers: string[];
-}

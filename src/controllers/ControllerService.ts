@@ -4,25 +4,12 @@ import HttpNotFoundResponse from "../response/HttpNotFoundResponse";
 import HttpResponse from "../response/HttpBaseResponse";
 import HttpServerErrorResponse from "../response/HttpServerErrorResponse";
 import Service, { serviceClass } from "../utils/services/Service";
-import { IController, IControllerService, IControllerSettings } from "./types";
-import { service } from "../utils/services/ServiceProvider";
+import { IController, IControllerService } from "./types";
 import { EServices } from "../types";
-import path from "path";
 
 @serviceClass(EServices.controllers)
 class ControllerService extends Service implements IControllerService {
   readonly controllers: IController[] = [];
-
-  @service(EServices.settings)
-  settings!: IControllerSettings;
-
-  async initState() {
-    let controllerModules: string[] = this.settings.controllers || [];
-    if(controllerModules.length > 0)
-      for(let module of controllerModules)
-        await import(path.resolve(this.settings.sourceDirectory, module));
-    super.initState();
-  }
 
   addController(controller: IController) {
     this.controllers.push(controller);

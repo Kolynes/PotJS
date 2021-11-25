@@ -25,11 +25,10 @@ export default class AuthMiddleware implements IMiddleware {
   }
 
   async validate(token: string): Promise<BaseEntity | undefined> {
-    const userModel = this.settings.userModel;
-    if(userModel == undefined)
-      throw new Error("userModel is not set in settings");
+    const UserModel = this.settings.UserModel;
+    if(UserModel == undefined)
+      throw new Error("UserModel is not set in settings");
     else {
-      let UserModel: typeof BaseEntity = await import(userModel);
       if(this.settings.secretKey == undefined)
         throw new Error("secretKey not set in settings")
       let data = jwt.verify(token, this.settings.secretKey);

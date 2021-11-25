@@ -1,6 +1,6 @@
 {
    "name": "@kolynes/potjs",
-   "version": "0.0.1",
+   "version": "0.0.1+1",
    "description": "A simple typescript web framework ",
    "main": "index.js",
    "types": "index.d.ts",

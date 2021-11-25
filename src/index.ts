@@ -1,1 +1,1 @@
-export { Server, Registry } from "./core";
+export { createServer, Registry } from "./core";

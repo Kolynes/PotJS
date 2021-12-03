@@ -29,7 +29,7 @@ export default class Server {
     }).listen(this.port, this.host)
     this.logger.log({
       type: "info",
-      message: `\nPotJS v0.0.8\nCreated by Kolynes C. Chinedu\nServer started on http://${this.host}:${this.port}`
+      message: `\nPotJS v0.1.0\nCreated by Kolynes C. Chinedu\nServer started on http://${this.host}:${this.port}`
     });
   }
 }

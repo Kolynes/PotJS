@@ -4,7 +4,7 @@ import { OutgoingHttpHeaders } from "http2";
 export default abstract class HttpBaseResponse {
   constructor(
     readonly status: number,
-    readonly body?: string,
+    readonly body: string = "",
     readonly headers: OutgoingHttpHeaders = {},
   ) {}
 

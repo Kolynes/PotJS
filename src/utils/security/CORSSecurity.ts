@@ -36,27 +36,33 @@ export default class CORSSecurity implements IMiddleware {
     return this;
   }
 
+  accessControlHeaders(request: HttpRequest) {
+    return {
+      "Access-Control-Allow-Origin": this.origin == "*"
+        ?(request.headers["origin"] || "").toString()
+        :this.origin,
+      "Access-Control-Allow-Methods": this.methods == "*"
+        ?(request.headers["access-control-request-method"] || "").toString()
+        :this.methods,
+      "Access-Control-Max-Age": this._maxAge.toString(),
+      "Access-Control-Allow-Headers": this.headers == "*"
+        ?(request.headers["access-control-request-headers"] || "").toString()
+        :this.headers
+    };
+  }
+
 
   async handle(request: HttpRequest, next: RequestResolver): Promise<HttpBaseResponse> {
     if(request.method == EHttpMethods.options) {
       return new HttpResponse(
         200, 
         undefined, 
-        {
-          "Access-Control-Allow-Origin": this.origin == "*"
-            ?(request.headers["origin"] || "").toString()
-            :this.origin,
-          "Access-Control-Allow-Methods": this.methods == "*"
-            ?(request.headers["access-control-request-methods"] || "").toString()
-            :this.methods,
-          "Access-Control-Max-Age": this._maxAge.toString(),
-          "Access-Control-Allow-Headers": this.headers == "*"
-            ?(request.headers["access-control-request-headers"] || "").toString()
-            :this.headers
-        }
+        this.accessControlHeaders(request)
       );
     } else {
-      return next(request);
+      const response = await next(request);
+      response.setHeaders(this.accessControlHeaders(request));
+      return response;
     }
   }
 }

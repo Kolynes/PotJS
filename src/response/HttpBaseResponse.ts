@@ -11,4 +11,9 @@ export default abstract class HttpBaseResponse {
     res.write(this.body);
     res.end();
   }
+
+  setHeaders(headers: OutgoingHttpHeaders) {
+    for(let header in headers)
+      this.headers[header] = headers[header];
+  }
 }

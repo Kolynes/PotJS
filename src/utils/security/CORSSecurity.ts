@@ -39,15 +39,20 @@ export default class CORSSecurity implements IMiddleware {
 
   async handle(request: HttpRequest, next: RequestResolver): Promise<HttpBaseResponse> {
     if(request.method == EHttpMethods.options) {
-      console.log(this);
       return new HttpResponse(
         200, 
         undefined, 
         {
-          "Access-Control-Allow-Origin": this.origin,
-          "Access-Control-Allow-Methods": this.methods,
-          "Access-Control-Max-Age": this._maxAge,
-          "Access-Control-Allow-Headers": this.headers
+          "Access-Control-Allow-Origin": this.origin == "*"
+            ?request.headers["origin"]?.toString()
+            :this.origin,
+          "Access-Control-Allow-Methods": this.methods == "*"
+            ?request.headers["access-control-request-methods"]?.toString()
+            :this.methods,
+          "Access-Control-Max-Age": this._maxAge.toString(),
+          "Access-Control-Allow-Headers": this.headers == "*"
+            ?request.headers["access-control-request-headers"]?.toString()
+            :this.headers
         }
       );
     } else {

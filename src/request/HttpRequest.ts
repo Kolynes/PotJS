@@ -1,5 +1,5 @@
 import formidable from "formidable";
-import { IncomingHttpHeaders, IncomingMessage } from "http";
+import { IncomingHttpHeaders, IncomingMessage, OutgoingHttpHeaders } from "http";
 import { BaseEntity } from "typeorm";
 import { EHttpMethods } from "../types";
 
@@ -7,7 +7,7 @@ export default class HttpRequest {
   user?: BaseEntity;
 
   private constructor(
-    readonly headers: IncomingHttpHeaders,
+    readonly headers: OutgoingHttpHeaders,
     readonly url: URL,
     readonly method: EHttpMethods,
     readonly queryParameters: URLSearchParams,

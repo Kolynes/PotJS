@@ -7,7 +7,7 @@ export default class HttpRequest {
   user?: BaseEntity;
 
   private constructor(
-    readonly headers: OutgoingHttpHeaders,
+    readonly headers: IncomingHttpHeaders,
     readonly url: URL,
     readonly method: EHttpMethods,
     readonly queryParameters: URLSearchParams,

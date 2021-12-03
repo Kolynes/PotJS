@@ -1,18 +1,18 @@
 import HttpResponse from "../response/HttpResponse";
 import Service, { serviceClass } from "../utils/services/Service";
-import { EServices, ILogger, ILogMessage } from "./types";
+import { EHttpMethods, EServices, ILogger, ILogMessage } from "./types";
 
 @serviceClass(EServices.logger)
 class Logger extends Service implements ILogger {
-  logResponse(url: string, response: HttpResponse): void {
+  logResponse(url: string, response: HttpResponse, method: EHttpMethods): void {
     if(response.status > 299 || response.status < 200)
       this.log({
         type: "error",
-        message: `${url} ${response.status} \n ${response.body}`
+        message: `${method} ${url} ${response.status} \n ${response.body}`
       });
     else this.log({
       type: "success",
-      message: `${url} ${response.status}`
+      message: `${method} ${url} ${response.status}`
     });
   }
 

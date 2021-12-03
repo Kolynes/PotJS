@@ -44,14 +44,14 @@ export default class CORSSecurity implements IMiddleware {
         undefined, 
         {
           "Access-Control-Allow-Origin": this.origin == "*"
-            ?request.headers["origin"]?.toString()
+            ?(request.headers["origin"] || "").toString()
             :this.origin,
           "Access-Control-Allow-Methods": this.methods == "*"
-            ?request.headers["access-control-request-methods"]?.toString()
+            ?(request.headers["access-control-request-methods"] || "").toString()
             :this.methods,
           "Access-Control-Max-Age": this._maxAge.toString(),
           "Access-Control-Allow-Headers": this.headers == "*"
-            ?request.headers["access-control-request-headers"]?.toString()
+            ?(request.headers["access-control-request-headers"] || "").toString()
             :this.headers
         }
       );

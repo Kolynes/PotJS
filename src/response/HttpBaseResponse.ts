@@ -1,10 +1,9 @@
-import { ServerResponse, IncomingHttpHeaders } from "http";
-
+import { ServerResponse, OutgoingHttpHeaders } from "http";
 export default abstract class HttpBaseResponse {
   constructor(
     readonly status: number,
     readonly body: string = "",
-    readonly headers: IncomingHttpHeaders = {},
+    readonly headers: OutgoingHttpHeaders = {},
   ) {}
 
   write(res: ServerResponse) {

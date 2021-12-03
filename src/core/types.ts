@@ -2,7 +2,7 @@ import HttpResponse from "../response/HttpResponse";
 import Service from "../utils/services/Service";
 
 export interface ILogger extends Service {
-  logResponse(url: string, response: HttpResponse): void;
+  logResponse(url: string, response: HttpResponse, method: EHttpMethods): void;
   log(message: ILogMessage): void;
 }
 

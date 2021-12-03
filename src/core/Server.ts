@@ -3,7 +3,7 @@ import { service } from "../utils/services/ServiceProvider";
 import { createServer } from "http";
 import HttpRequest from "../request/HttpRequest";
 import HttpBadRequestResponse from "../response/HttpBadRequestResponse";
-import { EServices, ILogger } from "./types";
+import { EHttpMethods, EServices, ILogger } from "./types";
 
 export default class Server {
 
@@ -21,7 +21,7 @@ export default class Server {
       try {
         let request = await HttpRequest.createHttpRequest(req)
         let response = await this.middlewareService.handle(request, 0);
-        this.logger.logResponse(request.url.toString(), response);
+        this.logger.logResponse(request.url.toString(), response, req.method as EHttpMethods);
         response.write(res);
       } catch (e) {
         new HttpBadRequestResponse(String(e) + "<br><br>" + String((e as any).stack)).write(res)
@@ -29,7 +29,7 @@ export default class Server {
     }).listen(this.port, this.host)
     this.logger.log({
       type: "info",
-      message: `\nPotJS v0.1.1\nCreated by Kolynes C. Chinedu\nServer started on http://${this.host}:${this.port}`
+      message: `\nPotJS v0.1.2\nCreated by Kolynes C. Chinedu\nServer started on http://${this.host}:${this.port}`
     });
   }
 }

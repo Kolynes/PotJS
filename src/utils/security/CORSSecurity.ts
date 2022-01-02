@@ -1,19 +1,21 @@
+import { ServerResponse } from "http";
+import Server from "../../core/Server";
 import { HttpRequest } from "../../request";
 import { HttpBaseResponse, HttpResponse } from "../../response";
 import { IMiddleware, IMiddlewareService, EServices, RequestResolver, EHttpMethods } from "../../types";
 import ServiceProvider from "../services/ServiceProvider";
-
-
 
 export default class CORSSecurity implements IMiddleware {
   private headers: string = "";
   private methods: string = "";
   private _maxAge: number = 0;
   private origin: string = "";
+  private _exposedHeaders: string = "";
 
   constructor() {
     const middlewareService = ServiceProvider.getInstance().getService<IMiddlewareService>(EServices.middleware);
     middlewareService.addMiddleware(this);
+    Server.responseWriter = this.responseWriter.bind(this);
   }
 
   allowedHeaders(headers: string): CORSSecurity {
@@ -36,33 +38,33 @@ export default class CORSSecurity implements IMiddleware {
     return this;
   }
 
-  accessControlHeaders(request: HttpRequest) {
+  exposedHeaders(headers: string): CORSSecurity {
+    this._exposedHeaders = headers;
+    return this;
+  }
+
+  get accessControlHeaders() {
     return {
-      "Access-Control-Allow-Origin": this.origin == "*"
-        ?(request.headers["origin"] || "").toString()
-        :this.origin,
-      "Access-Control-Allow-Methods": this.methods == "*"
-        ?(request.headers["access-control-request-method"] || "").toString()
-        :this.methods,
+      "Access-Control-Allow-Origin": this.origin,
+      "Access-Control-Allow-Methods": this.methods,
       "Access-Control-Max-Age": this._maxAge.toString(),
-      "Access-Control-Allow-Headers": this.headers == "*"
-        ?(request.headers["access-control-request-headers"] || "").toString()
-        :this.headers
+      "Access-Control-Allow-Headers": this.headers,
+      "Access-Control-Expose-Headers": this._exposedHeaders
     };
   }
 
-
   async handle(request: HttpRequest, next: RequestResolver): Promise<HttpBaseResponse> {
-    if(request.method == EHttpMethods.options) {
+    if(request.method == EHttpMethods.options)
       return new HttpResponse(
         200, 
         undefined, 
-        this.accessControlHeaders(request)
+        this.accessControlHeaders
       );
-    } else {
-      const response = await next(request);
-      response.setHeaders(this.accessControlHeaders(request));
-      return response;
-    }
+    else return await next(request);
+  }
+  
+  responseWriter(response: HttpBaseResponse, res: ServerResponse) {
+    response.setHeaders(this.accessControlHeaders);
+    response.write(res);
   }
 }

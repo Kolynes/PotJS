@@ -16,18 +16,18 @@ class AuthService extends Service implements IAuthService {
   @service(EServices.settings)
   private settings!: IAuthSettings;
   
-  login(user: { id: string }): string {
+  login(id: any): string {
     return jwt.sign(
-      { id: user.id },
+      { id },
       this.settings.secretKey, 
       this.settings.jwtSigningOptions
     );
   }
 
-  authenticate(credentials: IIndexable<string>): boolean {
+  async authenticate(credentials: IIndexable<string>): Promise<boolean> {
     let result = true;
     for(let authenticator of this.authenticators)
-      result = result && authenticator.authenticate(credentials);
+      result = result && await authenticator.authenticate(credentials);
     return result;
   }
 

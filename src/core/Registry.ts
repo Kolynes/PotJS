@@ -6,6 +6,8 @@ import "./Logger";
 import "../controllers/ControllerService";
 import "../middleware/MiddlewareService";
 import "../auth/AuthService";
+import "../files/FileService";
+import "../utils/mail/MailService";
 
 export default abstract class Registry {
   static initialize(settingsObject: IIndexable<any>) {

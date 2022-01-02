@@ -8,7 +8,7 @@ dist/
 /auth/
 /controllers/
 /core/
-/database/
+/files/
 /middleware/
 /request/
 /response/

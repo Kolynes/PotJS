@@ -1,7 +1,7 @@
 import Registry from "./Registry";
+import Server from "./Server";
 
 async function createServer(host?: string, port?: number) {
-  let Server = (await import("./Server")).default;
   new Server(host, port);
 }
 

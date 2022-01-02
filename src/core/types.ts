@@ -1,3 +1,4 @@
+import { OutgoingMessage, ServerResponse } from "http";
 import HttpResponse from "../response/HttpResponse";
 import Service from "../utils/services/Service";
 
@@ -11,12 +12,8 @@ export interface ILogMessage {
   message: string
 }
 
-export interface ISettings extends Service {
+export interface ISettings extends Service, IIndexable<any> {
   load(input: IIndexable<any>): void;
-}
-
-export interface IBasicSettings {
-  sourceDirectory: string;
 }
 
 export enum EHttpMethods {
@@ -30,6 +27,7 @@ export enum EHttpMethods {
   patch = "PATCH"
 }
 
+
 export enum EServices {
   settings = "settings",
   middleware = "middleware",
@@ -37,9 +35,13 @@ export enum EServices {
   database = "database",
   auth = "auth",
   observables = "observables",
-  logger = "logger"
+  logger = "logger",
+  files = "files",
+  mail = "mail"
 }
 
 export interface IIndexable<T> {
   [key: string]: T;
 }
+
+export type ResponseWriter = (response: HttpResponse, res: ServerResponse) => void;

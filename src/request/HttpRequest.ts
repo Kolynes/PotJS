@@ -1,42 +1,89 @@
-import formidable from "formidable";
-import { IncomingHttpHeaders, IncomingMessage, OutgoingHttpHeaders } from "http";
+import { IncomingHttpHeaders, IncomingMessage } from "http";
 import { BaseEntity } from "typeorm";
-import { EHttpMethods } from "../types";
+import { EHttpMethods, IIndexable } from "../types";
+import { EContentTypes } from "../utils/content-types";
+import querystring from "querystring";
+import MultipartParser, { FilePart } from "../utils/parsers/MultipartParser";
 
-export default class HttpRequest {  
+
+export default class HttpRequest extends MultipartParser {
   user?: BaseEntity;
 
   private constructor(
     readonly headers: IncomingHttpHeaders,
     readonly url: URL,
     readonly method: EHttpMethods,
-    readonly queryParameters: URLSearchParams,
-    readonly fields: formidable.Fields,
-    readonly files: formidable.Files,
-  ) {}
+    readonly queryParameters?: URLSearchParams,
+    readonly fields?: IIndexable<string | string[]>,
+    readonly files?: IIndexable<FilePart | FilePart[]>,
+    readonly body?: string | Buffer
+  ) { 
+    super();
+  }
 
   setUser(user: BaseEntity) {
     this.user = user;
   }
 
-  static createHttpRequest(baseRequest: IncomingMessage): Promise<HttpRequest> {
+  static createHttpRequest(baseRequest: IncomingMessage, body: string): Promise<HttpRequest> {
+
     return new Promise<HttpRequest>((resolve, reject) => {
-      const form = formidable();
       const url = new URL(baseRequest.url!, `http://${baseRequest.headers.host!}`);
-      form.parse(baseRequest, (err, fields, files) => {
-        if(err)
-          reject(String(err))
-        else resolve(
-          new HttpRequest(
-            baseRequest.headers,
-            url,
-            baseRequest.method as EHttpMethods,
-            url.searchParams,
-            fields,
-            files
+      let contentTypeInfo = (baseRequest.headers["content-type"] || "").split(";");
+      switch (contentTypeInfo[0]) {
+        case EContentTypes.json:
+          resolve(
+            new HttpRequest(
+              baseRequest.headers,
+              url,
+              baseRequest.method as EHttpMethods,
+              url.searchParams,
+              JSON.parse(body),
+              undefined,
+              body
+            )
+          );
+          break;
+        case EContentTypes.multipart:
+          let [fields, files] = this.getFieldsAndFiles(baseRequest, body)
+          resolve(
+            new HttpRequest(
+              baseRequest.headers,
+              url,
+              baseRequest.method as EHttpMethods,
+              url.searchParams,
+              fields,
+              files,
+              body
+            )
+          );
+          break;
+        case EContentTypes.urlencoded:
+          resolve(
+            new HttpRequest(
+              baseRequest.headers,
+              url,
+              baseRequest.method as EHttpMethods,
+              url.searchParams,
+              querystring.parse<IIndexable<any>>(body),
+              undefined,
+              body
+            )
           )
-        );
-      })
+          break;
+        default:
+          resolve(
+            new HttpRequest(
+              baseRequest.headers,
+              url,
+              baseRequest.method as EHttpMethods,
+              url.searchParams,
+              undefined,
+              undefined,
+              body
+            )
+          );
+      }
     });
   }
 }

@@ -4,7 +4,7 @@ import HttpResponse from "../response/HttpBaseResponse";
 import { EHttpMethods, EServices, IIndexable } from "../types";
 import ServiceProvider from "../utils/services/ServiceProvider";
 import ControllerMiddlewareService from "./ControllerMiddlewareService";
-import { IController, IControllerService } from "./types";
+import { IController, IControllerService, RouteDecorator } from "./types";
 
 export function controller(path: string, middleware?: IMiddleware[]): ClassDecorator {
   return (target: any) => {
@@ -16,42 +16,46 @@ export function controller(path: string, middleware?: IMiddleware[]): ClassDecor
   }
 }
 
-export function route(path: string = "", method: EHttpMethods = EHttpMethods.get): MethodDecorator {
+export function route(path: string = "", method: EHttpMethods = EHttpMethods.get, decorators: RouteDecorator[] = []): MethodDecorator {
   return (target: any, propertyKey: string | symbol, descriptor) => {
-    Object.defineProperty(target, `Route${propertyKey as String}`, { value: { call: target[propertyKey], path, method } })
+    let call = target[propertyKey].bind(target);
+    for(let decorator of decorators)
+      call = decorator(target, call);
+    Object.defineProperty(target, `Route${propertyKey as String}`, { value: { call, path, method } })
+    target[propertyKey] = undefined;
   }
 }
 
-export function Get(path: string = ""): MethodDecorator {
-  return route(path, EHttpMethods.get);
+export function Get(path: string = "", decorators: RouteDecorator[] = []): MethodDecorator {
+  return route(path, EHttpMethods.get, decorators);
 }
 
-export function Post(path: string = ""): MethodDecorator {
-  return route(path, EHttpMethods.post);
+export function Post(path: string = "", decorators: RouteDecorator[] = []): MethodDecorator {
+  return route(path, EHttpMethods.post, decorators);
 }
 
-export function Put(path: string = ""): MethodDecorator {
-  return route(path, EHttpMethods.put);
+export function Put(path: string = "", decorators: RouteDecorator[] = []): MethodDecorator {
+  return route(path, EHttpMethods.put, decorators);
 }
 
-export function Delete(path: string = ""): MethodDecorator {
-  return route(path, EHttpMethods.delete);
+export function Delete(path: string = "", decorators: RouteDecorator[] = []): MethodDecorator {
+  return route(path, EHttpMethods.delete, decorators);
 }
 
-export function Patch(path: string = ""): MethodDecorator {
-  return route(path, EHttpMethods.patch);
+export function Patch(path: string = "", decorators: RouteDecorator[] = []): MethodDecorator {
+  return route(path, EHttpMethods.patch, decorators);
 }
 
-export function Connect(path: string = ""): MethodDecorator {
-  return route(path, EHttpMethods.connect);
+export function Connect(path: string = "", decorators: RouteDecorator[] = []): MethodDecorator {
+  return route(path, EHttpMethods.connect, decorators);
 }
 
-export function Options(path: string = ""): MethodDecorator {
-  return route(path, EHttpMethods.options);
+export function Options(path: string = "", decorators: RouteDecorator[] = []): MethodDecorator {
+  return route(path, EHttpMethods.options, decorators);
 }
 
-export function Trace(path: string = ""): MethodDecorator {
-  return route(path, EHttpMethods.trace);
+export function Trace(path: string = "", decorators: RouteDecorator[] = []): MethodDecorator {
+  return route(path, EHttpMethods.trace, decorators);
 }
 
 export default class Controller implements IController {
@@ -78,10 +82,10 @@ export default class Controller implements IController {
 
   registerRoute(path: string, method: EHttpMethods, instanceMethod: Function) {
     if (this.routes[this.basePath + path] == null)
-      this.routes[this.basePath + path] = new Map();
+    this.routes[this.basePath + path] = new Map();
     else if (this.routes[this.basePath + path].has(method))
-      throw (`Error registering route: ${method} ${this.basePath + path} has been registered before`)
-    this.routes[this.basePath + path].set(method, instanceMethod.bind(this))
+    throw (`Error registering route: ${method} ${this.basePath + path} has been registered before`)
+    this.routes[this.basePath + path].set(method, instanceMethod)
   }
 
   async routeToMethod(request: HttpRequest, route: string, params: any[]): Promise<HttpResponse> {

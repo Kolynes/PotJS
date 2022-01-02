@@ -1,7 +1,8 @@
 import { IMiddlewareService } from "../middleware/types";
 import HttpRequest from "../request/HttpRequest";
+import HttpBaseResponse from "../response/HttpBaseResponse";
 import HttpResponse from "../response/HttpBaseResponse";
-import { EHttpMethods, IBasicSettings, IIndexable } from "../types";
+import { EHttpMethods, IIndexable } from "../types";
 import Service from "../utils/services/Service";
 
 export interface IController {
@@ -15,3 +16,7 @@ export interface IControllerService extends Service {
   addController(controller: IController): void;
   routeToController(request: HttpRequest): Promise<HttpResponse>;
 }
+
+export type RouteDecorator = (target: object, route: RouteMethod) => RouteMethod;
+
+export type RouteMethod = (request: HttpRequest, ...args: any[]) => Promise<HttpBaseResponse>;

@@ -1,6 +1,5 @@
 import HttpRequest from "../request/HttpRequest";
 import HttpResponse from "../response/HttpBaseResponse";
-import { IBasicSettings } from "../types";
 import Service from "../utils/services/Service";
 
 export type RequestResolver = (request: HttpRequest) => Promise<HttpResponse>;

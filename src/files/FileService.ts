@@ -41,7 +41,7 @@ class FileService extends Service implements IFileService {
       await fs.mkdir(absPath, { recursive: true });
     let predicate = file.filename!.substring(0, file.filename!.lastIndexOf("."))
     let mimeType = file.filename!.substring(file.filename!.lastIndexOf("."))
-    let filename = escape(`${predicate}${time}${mimeType}`);
+    let filename = `${predicate}${time}${mimeType}`;
     let fileStream = fs.createWriteStream(path.resolve(absPath, filename));
     fileStream.write(file.value);
     fileStream.close();
